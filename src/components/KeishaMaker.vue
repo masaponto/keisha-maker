@@ -6,7 +6,7 @@
 
 		<div>
 			<div class="total">
-				<a>Total</a>
+				<a>{{ columns.total }}</a>
 				<input type="number" v-model="total" pliceholder="0" />
 			</div>
 			<div class="bucho">
@@ -42,13 +42,14 @@
 			<table align="center">
 				<thead>
 					<tr>
-						<th v-for="(value, key) in columns">
+						<th v-for="(value, key) in columns" @click="sortBy(key)">
 							{{ value }}
+							<span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'"></span>
 						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="keisha in keishas">
+					<tr v-for="keisha in sortedKeishas">
 						<td v-for="(value, key) in columns">
 							{{ keisha[key] }}
 						</td>
@@ -69,13 +70,18 @@
 		 }
 
 		 const columns = {
-			 total: '金額',
 			 bucho: '部長',
 			 tbucho: '担当部長',
 			 kacho: '課長',
 			 shusa:'主査',
-			 hira: '社員'
+			 hira: '社員',
+			 total: '金額'
 		 };
+
+		 var sortOrders = {}
+		 Object.keys(columns).forEach(function (key) {
+			 sortOrders[key] = 1
+		 });
 
 		 return { total: '65000',
 				  bucho_num: '0',
@@ -85,7 +91,9 @@
 				  hira_num:'0',
 				  prices: prices,
 				  columns: columns,
-				  keishas: []
+				  keishas: [],
+				  sortOrders: sortOrders,
+				  sortKey: ''
 		 }
 	 },
 	 methods: {
@@ -177,6 +185,31 @@
 
 				 this.keishas.push(keisha)
 			 }
+		 },
+		 sortBy: function(key) {
+			 console.log('sort by')
+			 console.log(key)
+			 this.sortKey = key;
+			 this.sortOrders[key] = this.sortOrders[key] * -1;
+		 }
+	 },
+	 computed: {
+		 //https://www.webopixel.net/javascript/1193.html
+		 sortedKeishas: function () {
+			 console.log('sortedKeishas')
+			 let data = this.keishas;
+			 let sortKey = this.sortKey;
+			 let order = this.sortOrders[sortKey] || 1;
+
+			 if (sortKey) {
+				 data = data.slice().sort(function(a, b){
+					 a = a[sortKey];
+					 b = b[sortKey];
+					 return (a === b ? 0 : a > b ? 1 : -1) * order;
+				 });
+			 }
+
+			 return data
 		 }
 	 }
  }
@@ -186,18 +219,19 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style scoped>
-h3 {
-	margin: 40px 0 0;
-}
-ul {
-	list-style-type: none;
-	padding: 0;
-}
-li {
-	display: inline-block;
-	margin: 0 10px;
-}
-a {
-	color: #42b983;
-}
+ h3 {
+	 margin: 40px 0 0;
+ }
+ ul {
+	 list-style-type: none;
+	 padding: 0;
+ }
+ li {
+	 display: inline-block;
+	 margin: 0 10px;
+ }
+ a {
+	 color: #42b983;
+ }
+
 </style>
