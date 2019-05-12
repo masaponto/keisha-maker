@@ -39,22 +39,20 @@
 			</div>
 		</div>
 		<div>
-			<table>
+			<table align="center">
 				<thead>
 					<tr>
-						<th>Index</th>
-						<th>Total Price</th>
-						<th>Bucho</th>
-						<th>TB</th>
-						<th>TK</th>
-						<th>Shusa</th>
-						<th>Hira</th>
+						<th v-for="(value, key) in columns">
+							{{ value }}
+						</th>
 					</tr>
 				</thead>
 				<tbody>
-					<!-- <tr v-for="entry in filteredHeroes">
-
-						 </tr> -->
+					<tr v-for="keisha in keishas">
+						<td v-for="(value, key) in columns">
+							{{ keisha[key] }}
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -70,13 +68,24 @@
 			 prices[i] = i * 500 + 2000;
 		 }
 
+		 const columns = {
+			 total: '金額',
+			 bucho: '部長',
+			 tbucho: '担当部長',
+			 kacho: '課長',
+			 shusa:'主査',
+			 hira: '社員'
+		 };
+
 		 return { total: '65000',
 				  bucho_num: '0',
 				  tanto_bucho_num: '0',
 				  kacho_num: '0',
 				  shusa_num: '0',
 				  hira_num:'0',
-				  prices: prices
+				  prices: prices,
+				  columns: columns,
+				  keishas: []
 		 }
 	 },
 	 methods: {
@@ -121,13 +130,22 @@
 		 calc_total: function(combs, nums, kinds) {
 			 let total = 0
 			 for (var i=0; i < kinds; i++) {
-				 total += combs[i] * nums[i]
+				 total += combs[i] * nums[i].num
 			 }
 			 return total;
 		 },
 		 calc: function(event) {
-			 const nums = [this.hira_num, this.shusa_num, this.kacho_num, this.tanto_bucho_num, this.bucho_num]
-			 const kinds = nums.filter(num => num > 0).length
+
+			 this.keishas = []
+
+			 const nums = [{name:'hira', num: this.hira_num},
+						   {name:'shusa', num: this.shusa_num},
+						   {name:'kacho', num: this.kacho_num},
+						   {name:'tbucho', num: this.tanto_bucho_num},
+						   {name:'bucho', num: this.bucho_num}]
+
+			 const kinds = nums.filter(num => num.num > 0).length
+			 console.log(kinds)
 			 let combs = this.k_combinations(this.prices, kinds)
 			 combs = combs.map(c => c.sort())
 			 let prices = combs.map(c => this.calc_total(c, nums, kinds))
@@ -136,9 +154,29 @@
 			 const match_combs = combs.filter((c, index) => match_indeces[index])
 			 const match_prices = prices.filter((p, index) => match_indeces[index])
 
-			 console.log(match_indeces)
-			 console.log(match_combs)
-			 console.log(match_prices)
+			 for (var i = 0; i < match_combs.length; i++) {
+				 let keisha = {total: 0,
+							   bucho: 0,
+							   tbucho: 0,
+							   kacho: 0,
+							   shusa: 0,
+							   hira: 0}
+
+				 const c = match_combs[i]
+				 const p = match_prices[i]
+
+				 keisha['total'] = p
+
+				 var k = 0
+				 nums.forEach(num => {
+					 if (num.num !=0) {
+						 keisha[num.name] = c[k]
+						 k++
+					 }
+				 })
+
+				 this.keishas.push(keisha)
+			 }
 		 }
 	 }
  }
