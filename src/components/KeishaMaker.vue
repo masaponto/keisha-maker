@@ -5,36 +5,36 @@
 		</div>
 
 		<div>
-			<div class="total">
+			<div id="total">
 				<a>{{ columns.total }}</a>
 				<input type="number" v-model="total" pliceholder="0" />
 			</div>
-			<div class="bucho">
+			<div id="bucho">
 				<a>{{ columns.bucho }}</a>
 				<input type="number" v-model="bucho_num" placeholder="0" />
 			</div>
 
-			<div class="tanto-bucho">
+			<div id="tanto-bucho">
 				<a>{{ columns.tbucho }}</a>
 				<input type="number" v-model="tanto_bucho_num" placeholder="0" />
 			</div>
 
-			<div class="kacho">
+			<div id="kacho">
 				<a>{{ columns.kacho }}</a>
 				<input type="number" v-model="kacho_num" placeholder="0" />
 			</div>
 
-			<div class="shusa">
+			<div id="shusa">
 				<a>{{ columns.shusa }}</a>
 				<input type="number" v-model="shusa_num" placeholder="0" />
 			</div>
 
-			<div class="hira">
+			<div id="hira">
 				<a>{{ columns.hira }}</a>
 				<input type="number" v-model="hira_num" placeholder="0" />
 			</div>
 
-			<div calss="calc-button">
+			<div id="calc-button">
 				<button large class="calc-btn" @click="calc()">Run</button>
 			</div>
 		</div>
@@ -234,4 +234,21 @@
 	 color: #42b983;
  }
 
+ input {
+	 text-align: right;
+ }
+
+ #total{
+	 margin-bottom: 20px;
+ }
+
+ /* .table {
+	display: table;
+	text-align: center;
+	}
+
+	.cell {
+	display: table-cell;
+	}
+  */
 </style>
