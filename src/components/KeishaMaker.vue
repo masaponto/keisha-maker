@@ -10,27 +10,27 @@
 				<input type="number" v-model="total" pliceholder="0" />
 			</div>
 			<div class="bucho">
-				<a>bucho</a>
+				<a>{{ columns.bucho }}</a>
 				<input type="number" v-model="bucho_num" placeholder="0" />
 			</div>
 
 			<div class="tanto-bucho">
-				<a>tanto-bucho</a>
+				<a>{{ columns.tbucho }}</a>
 				<input type="number" v-model="tanto_bucho_num" placeholder="0" />
 			</div>
 
 			<div class="kacho">
-				<a>kacho</a>
+				<a>{{ columns.kacho }}</a>
 				<input type="number" v-model="kacho_num" placeholder="0" />
 			</div>
 
 			<div class="shusa">
-				<a>shusa</a>
+				<a>{{ columns.shusa }}</a>
 				<input type="number" v-model="shusa_num" placeholder="0" />
 			</div>
 
 			<div class="hira">
-				<a>hira</a>
+				<a>{{ columns.hira }}</a>
 				<input type="number" v-model="hira_num" placeholder="0" />
 			</div>
 
