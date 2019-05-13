@@ -7,21 +7,46 @@
 		<div class="grid">
 			<a>{{ columns.total }}</a>
 			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
+			<a></a>
+			<a></a>
+			<a></a>
+			<a class="num">{{select_total}}</a>
 
 			<a>{{ columns.bucho }}</a>
 			<input type="number" min="0" v-model="bucho_num" placeholder="0" />
+			<a> × </a>
+			<a class="num"> {{select_price.bucho}} </a>
+			<a> ＝ </a>
+			<a class="num"> {{pos_price.bucho}} </a>
 
 			<a class="pos">{{ columns.tbucho }}</a>
 			<input type="number" min="0" v-model="tanto_bucho_num" placeholder="0" />
+			<a> × </a>
+			<a class="num"> {{select_price.tbucho}} </a>
+			<a> ＝ </a>
+			<a class="num"> {{pos_price.tbucho}} </a>
 
 			<a>{{ columns.kacho }}</a>
 			<input type="number" min="0" v-model="kacho_num" placeholder="0" />
+			<a> × </a>
+			<a class="num"> {{select_price.kacho}} </a>
+			<a> ＝ </a>
+			<a class="num"> {{pos_price.kacho}} </a>
 
 			<a>{{ columns.shusa }}</a>
 			<input type="number" min="0" v-model="shusa_num" placeholder="0" />
+			<a> × </a>
+			<a class="num"> {{select_price.shusa}} </a>
+			<a> ＝ </a>
+			<a class="num"> {{pos_price.shusa}} </a>
 
 			<a>{{ columns.hira }}</a>
 			<input type="number" min="0" v-model="hira_num" placeholder="0" />
+			<a> × </a>
+			<a class="num">{{ select_price.hira }}</a>
+			<a> ＝ </a>
+			<a class="num"> {{pos_price.hira}} </a>
+
 		</div>
 		<div id="calc-button">
 			<button large class="calc-btn" @click="calc()">計算</button>
@@ -37,7 +62,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="keisha in sortedKeishas">
+					<tr v-for="keisha in sortedKeishas" @click="showPrice(keisha)">
 						<td v-for="(value, key) in columns" align="right">
 							{{ keisha[key] }}
 						</td>
@@ -71,6 +96,22 @@
 			 sortOrders[key] = 1
 		 });
 
+		 const select_price = {
+			 bucho: " ",
+			 tbucho: " ",
+			 kacho: " ",
+			 shusa: " ",
+			 hira: " ",
+		 }
+
+		 const pos_price = {
+			 bucho: " ",
+			 tbucho: " ",
+			 kacho: " ",
+			 shusa: " ",
+			 hira: " ",
+		 }
+
 		 return { total: '65000',
 				  bucho_num: '0',
 				  tanto_bucho_num: '0',
@@ -81,7 +122,10 @@
 				  columns: columns,
 				  keishas: [],
 				  sortOrders: sortOrders,
-				  sortKey: ''
+				  sortKey: '',
+				  select_price: select_price,
+				  pos_price: pos_price,
+				  select_total: '',
 		 }
 	 },
 	 methods: {
@@ -179,6 +223,15 @@
 			 console.log(key)
 			 this.sortKey = key;
 			 this.sortOrders[key] = this.sortOrders[key] * -1;
+		 },
+		 showPrice: function(keisha) {
+			 this.select_price = keisha;
+			 this.pos_price = {'bucho': keisha.bucho * this.bucho_num,
+							   'tbucho': keisha.tbucho * this.tanto_bucho_num,
+							   'kacho': keisha.kacho * this.kacho_num,
+							   'shusa': keisha.shusa * this.shusa_num,
+							   'hira': keisha.hira * this.hira_num}
+			 this.select_total = keisha.total
 		 }
 	 },
 	 computed: {
@@ -222,11 +275,14 @@
 	 border-color: #42b983;
  }
 
+ .num {
+	 text-align: right;
+ }
 
  .grid {
 	 display: grid;
 	 justify-content: center;
-	 grid-template-columns: 100px 150px;
+	 grid-template-columns: 100px 150px 25px 50px 20px 50px;
 	 grid-row-gap: 10px;
  }
 
