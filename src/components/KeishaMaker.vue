@@ -5,13 +5,6 @@
 		</div>
 
 		<div class="grid">
-			<a>{{ columns.total }}</a>
-			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
-			<a></a>
-			<a></a>
-			<a></a>
-			<a class="num">{{select_total}}</a>
-
 			<a>{{ columns.bucho }}</a>
 			<input type="number" min="0" v-model="bucho_num" placeholder="0" />
 			<a> × </a>
@@ -46,6 +39,20 @@
 			<a class="num">{{ select_price.hira }}</a>
 			<a> ＝ </a>
 			<a class="num"> {{pos_price.hira}} </a>
+
+			<a>{{ columns.total }}</a>
+			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
+			<a></a>
+			<a></a>
+			<a></a>
+			<a class="num">{{select_total}}</a>
+
+			<a>{{ errorText }}</a>
+			<input type="number" min="0" max="5000" v-model="errorVal" pliceholder="0" />
+			<a></a>
+			<a></a>
+			<a></a>
+			<a class="num"> {{select_error}}</a>
 
 		</div>
 		<div id="calc-button">
@@ -88,7 +95,7 @@
 			 kacho: '課長',
 			 shusa:'主査',
 			 hira: '社員',
-			 total: '金額'
+			 total: '合計金額'
 		 };
 
 		 var sortOrders = {}
@@ -112,6 +119,7 @@
 			 hira: " ",
 		 }
 
+
 		 return { total: '65000',
 				  bucho_num: '0',
 				  tanto_bucho_num: '0',
@@ -126,6 +134,9 @@
 				  select_price: select_price,
 				  pos_price: pos_price,
 				  select_total: '',
+				  errorText: '許容誤差',
+				  errorVal: '500',
+				  select_error: '',
 		 }
 	 },
 	 methods: {
@@ -176,6 +187,14 @@
 		 },
 		 calc: function(event) {
 
+			 this.select_price = {}
+			 this.pos_price = {'bucho': ' ',
+							   'tbucho': ' ',
+							   'kacho': ' ',
+							   'shusa': ' ',
+							   'hira': ' '}
+			 this.select_total = ' '
+
 			 this.keishas = []
 
 			 const nums = [{name:'hira', num: this.hira_num},
@@ -185,12 +204,11 @@
 						   {name:'bucho', num: this.bucho_num}]
 
 			 const kinds = nums.filter(num => num.num > 0).length
-			 console.log(kinds)
 			 let combs = this.k_combinations(this.prices, kinds)
 			 combs = combs.map(c => c.sort())
 			 let prices = combs.map(c => this.calc_total(c, nums, kinds))
 
-			 const match_indeces = prices.map(p => (0 <= (p - this.total)) && ((p - this.total) <= 500))
+			 const match_indeces = prices.map(p => (0 <= (p - this.total)) && ((p - this.total) <= this.errorVal))
 			 const match_combs = combs.filter((c, index) => match_indeces[index])
 			 const match_prices = prices.filter((p, index) => match_indeces[index])
 
@@ -232,6 +250,7 @@
 							   'shusa': keisha.shusa * this.shusa_num,
 							   'hira': keisha.hira * this.hira_num}
 			 this.select_total = keisha.total
+			 this.select_error = keisha.total - this.total
 		 }
 	 },
 	 computed: {
