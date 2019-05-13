@@ -1,7 +1,7 @@
 <template>
-	<div>
+	<div id="app">
 		<div class="Title">
-			<h1>傾斜つけるくん(β)</h1>
+			<h1>傾斜つけるくん</h1>
 		</div>
 
 		<div class="grid">
@@ -207,17 +207,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style scoped>
- h3 {
-	 margin: 40px 0 0;
- }
- ul {
-	 list-style-type: none;
-	 padding: 0;
- }
- li {
-	 display: inline-block;
-	 margin: 0 10px;
- }
+
  a {
 	 color: #42b983;
  }
@@ -237,6 +227,7 @@
 	 display: grid;
 	 justify-content: center;
 	 grid-template-columns: 100px 150px;
+	 grid-row-gap: 10px;
  }
 
  .calc-btn {
