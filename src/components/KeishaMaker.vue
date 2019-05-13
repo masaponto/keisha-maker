@@ -1,42 +1,30 @@
 <template>
 	<div>
 		<div class="Title">
-			<h1>Keisha Maker</h1>
+			<h1>傾斜つけるくん(β)</h1>
 		</div>
 
-		<div>
-			<div id="total">
-				<a>{{ columns.total }}</a>
-				<input type="number" v-model="total" pliceholder="0" />
-			</div>
-			<div id="bucho">
-				<a>{{ columns.bucho }}</a>
-				<input type="number" v-model="bucho_num" placeholder="0" />
-			</div>
+		<div class="grid">
+			<a>{{ columns.total }}</a>
+			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
 
-			<div id="tanto-bucho">
-				<a>{{ columns.tbucho }}</a>
-				<input type="number" v-model="tanto_bucho_num" placeholder="0" />
-			</div>
+			<a>{{ columns.bucho }}</a>
+			<input type="number" min="0" v-model="bucho_num" placeholder="0" />
 
-			<div id="kacho">
-				<a>{{ columns.kacho }}</a>
-				<input type="number" v-model="kacho_num" placeholder="0" />
-			</div>
+			<a class="pos">{{ columns.tbucho }}</a>
+			<input type="number" min="0" v-model="tanto_bucho_num" placeholder="0" />
 
-			<div id="shusa">
-				<a>{{ columns.shusa }}</a>
-				<input type="number" v-model="shusa_num" placeholder="0" />
-			</div>
+			<a>{{ columns.kacho }}</a>
+			<input type="number" min="0" v-model="kacho_num" placeholder="0" />
 
-			<div id="hira">
-				<a>{{ columns.hira }}</a>
-				<input type="number" v-model="hira_num" placeholder="0" />
-			</div>
+			<a>{{ columns.shusa }}</a>
+			<input type="number" min="0" v-model="shusa_num" placeholder="0" />
 
-			<div id="calc-button">
-				<button large class="calc-btn" @click="calc()">Run</button>
-			</div>
+			<a>{{ columns.hira }}</a>
+			<input type="number" min="0" v-model="hira_num" placeholder="0" />
+		</div>
+		<div id="calc-button">
+			<button large class="calc-btn" @click="calc()">計算</button>
 		</div>
 		<div>
 			<table align="center">
@@ -50,7 +38,7 @@
 				</thead>
 				<tbody>
 					<tr v-for="keisha in sortedKeishas">
-						<td v-for="(value, key) in columns">
+						<td v-for="(value, key) in columns" align="right">
 							{{ keisha[key] }}
 						</td>
 					</tr>
@@ -236,19 +224,101 @@
 
  input {
 	 text-align: right;
+	 border-radius: 4px;
+	 border: 1px solid #ccc;
  }
 
- #total{
+ input:focus{
+	 border-color: #42b983;
+ }
+
+
+ .grid {
+	 display: grid;
+	 justify-content: center;
+	 grid-template-columns: 100px 150px;
+ }
+
+ .calc-btn {
+	 margin-top: 20px;
 	 margin-bottom: 20px;
+	 width: 250px;
+	 height: 30px;
+     border: none;
+     background: #42b983;
+     color: #fff;
+     font-weight: 500;
+     border-radius: 4px;
+     cursor: pointer;
+     text-align: center;
+     cursor: pointer;
+     font-weight: bold;
+     box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2);
  }
 
- /* .table {
-	display: table;
-	text-align: center;
-	}
+ .calc-btn:hover{
+	 background-color: #2d825b;
+ }
 
-	.cell {
-	display: table-cell;
-	}
-  */
+ .calc-btn:active{
+	 position: relative;
+	 top: 1px;
+	 left: 1px;
+	 box-shadow: none;
+ }
+
+ table {
+	 border: 2px solid #42b983;
+	 border-radius: 3px;
+	 background-color: #fff;
+ }
+
+ th {
+	 background-color: #42b983;
+	 color: rgba(255,255,255,0.66);
+	 cursor: pointer;
+	 -webkit-user-select: none;
+	 -moz-user-select: none;
+	 -ms-user-select: none;
+	 user-select: none;
+ }
+
+ td {
+	 background-color: #f9f9f9;
+ }
+
+ th, td {
+	 min-width: 30px;
+	 padding: 10px 20px;
+ }
+
+ th.active {
+	 color: #fff;
+ }
+
+ th.active .arrow {
+	 opacity: 1;
+ }
+
+ .arrow {
+	 display: inline-block;
+	 vertical-align: middle;
+	 width: 0;
+	 height: 0;
+	 margin-left: 5px;
+	 opacity: 0.66;
+ }
+
+ .arrow.asc {
+	 border-left: 4px solid transparent;
+	 border-right: 4px solid transparent;
+	 border-bottom: 4px solid #fff;
+ }
+
+ .arrow.dsc {
+	 border-left: 4px solid transparent;
+	 border-right: 4px solid transparent;
+	 border-top: 4px solid #fff;
+ }
+
 </style>
