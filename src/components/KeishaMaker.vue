@@ -12,13 +12,6 @@
 			<a> ＝ </a>
 			<a class="num"> {{pos_price.bucho}} </a>
 
-			<a class="pos">{{ columns.tbucho }}</a>
-			<input type="number" min="0" v-model="tanto_bucho_num" placeholder="0" />
-			<a> × </a>
-			<a class="num"> {{select_price.tbucho}} </a>
-			<a> ＝ </a>
-			<a class="num"> {{pos_price.tbucho}} </a>
-
 			<a>{{ columns.kacho }}</a>
 			<input type="number" min="0" v-model="kacho_num" placeholder="0" />
 			<a> × </a>
@@ -39,6 +32,13 @@
 			<a class="num">{{ select_price.hira }}</a>
 			<a> ＝ </a>
 			<a class="num"> {{pos_price.hira}} </a>
+
+			<a>{{ columns.extra }}</a>
+			<input type="number" min="0" v-model="extra_num" placeholder="0" />
+			<a> × </a>
+			<a class="num">{{ select_price.extra }}</a>
+			<a> ＝ </a>
+			<a class="num"> {{pos_price.extra}} </a>
 
 			<a>{{ columns.total }}</a>
 			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
@@ -85,16 +85,16 @@
 	 data() {
 
 		 var prices = new Array(18);
-		 for (var i=0; i < 18; i++) {
-			 prices[i] = i * 500 + 2000;
+		 for (var i=0; i < 19; i++) {
+			 prices[i] = i * 500 + 1000;
 		 }
 
 		 const columns = {
 			 bucho: '部長',
-			 tbucho: '担当部長',
 			 kacho: '課長',
 			 shusa:'主査',
 			 hira: '社員',
+			 extra: 'その他',
 			 total: '合計金額'
 		 };
 
@@ -105,27 +105,27 @@
 
 		 const select_price = {
 			 bucho: " ",
-			 tbucho: " ",
 			 kacho: " ",
 			 shusa: " ",
 			 hira: " ",
+			 extra: " "
 		 }
 
 		 const pos_price = {
 			 bucho: " ",
-			 tbucho: " ",
 			 kacho: " ",
 			 shusa: " ",
 			 hira: " ",
+			 extra: " "
 		 }
 
 
 		 return { total: '65000',
 				  bucho_num: '0',
-				  tanto_bucho_num: '0',
 				  kacho_num: '0',
 				  shusa_num: '0',
 				  hira_num:'0',
+				  extra_num: '0',
 				  prices: prices,
 				  columns: columns,
 				  keishas: [],
@@ -186,69 +186,76 @@
 			 return total;
 		 },
 		 calc: function(event) {
-
+			 console.log('calc')
 			 this.select_price = {}
 			 this.pos_price = {'bucho': ' ',
-							   'tbucho': ' ',
 							   'kacho': ' ',
 							   'shusa': ' ',
-							   'hira': ' '}
+							   'hira': ' ',
+							   'extra': ' '}
+
+			 this.select_error = ' '
 			 this.select_total = ' '
 
 			 this.keishas = []
 
-			 const nums = [{name:'hira', num: this.hira_num},
-						   {name:'shusa', num: this.shusa_num},
-						   {name:'kacho', num: this.kacho_num},
-						   {name:'tbucho', num: this.tanto_bucho_num},
-						   {name:'bucho', num: this.bucho_num}]
+			 const nums = [{name:'extra', num: this.extra_num, rank: 0},
+						   {name:'hira', num: this.hira_num, rank: 1},
+						   {name:'shusa', num: this.shusa_num, rank: 2},
+						   {name:'kacho', num: this.kacho_num, rank: 3},
+						   {name:'bucho', num: this.bucho_num, rank: 4}]
 
 			 const kinds = nums.filter(num => num.num > 0).length
 			 let combs = this.k_combinations(this.prices, kinds)
 			 combs = combs.map(c => c.sort())
-			 let prices = combs.map(c => this.calc_total(c, nums, kinds))
+			 let prices = combs.map(c => this.calc_total(c.sort((a, b) => a - b), nums, kinds))
 
 			 const match_indeces = prices.map(p => (0 <= (p - this.total)) && ((p - this.total) <= this.errorVal))
 			 const match_combs = combs.filter((c, index) => match_indeces[index])
 			 const match_prices = prices.filter((p, index) => match_indeces[index])
 
+
+			 let select_nums = nums.filter((x) => x.num > 0)
+			 select_nums = select_nums.sort(function(a,b){
+				 if(a.rank < b.rank) return -1;
+				 if(a.rank > b.rank) return 1;
+				 return 0;
+			 });
+
 			 for (var i = 0; i < match_combs.length; i++) {
 				 let keisha = {total: 0,
 							   bucho: 0,
-							   tbucho: 0,
 							   kacho: 0,
 							   shusa: 0,
-							   hira: 0}
+							   hira: 0,
+							   extra: 0}
 
 				 const c = match_combs[i]
 				 const p = match_prices[i]
 
+
 				 keisha['total'] = p
 
-				 var k = 0
-				 nums.forEach(num => {
-					 if (num.num !=0) {
-						 keisha[num.name] = c[k]
-						 k++
-					 }
+				 let k = 0
+				 select_nums.forEach(n => {
+					 keisha[n.name] = c[k]
+					 k++
 				 })
 
 				 this.keishas.push(keisha)
 			 }
 		 },
 		 sortBy: function(key) {
-			 console.log('sort by')
-			 console.log(key)
 			 this.sortKey = key;
 			 this.sortOrders[key] = this.sortOrders[key] * -1;
 		 },
 		 showPrice: function(keisha) {
 			 this.select_price = keisha;
 			 this.pos_price = {'bucho': keisha.bucho * this.bucho_num,
-							   'tbucho': keisha.tbucho * this.tanto_bucho_num,
 							   'kacho': keisha.kacho * this.kacho_num,
 							   'shusa': keisha.shusa * this.shusa_num,
-							   'hira': keisha.hira * this.hira_num}
+							   'hira': keisha.hira * this.hira_num,
+							   'extra': keisha.extra * this.extra_num}
 			 this.select_total = keisha.total
 			 this.select_error = keisha.total - this.total
 		 }
@@ -256,7 +263,6 @@
 	 computed: {
 		 //https://www.webopixel.net/javascript/1193.html
 		 sortedKeishas: function () {
-			 console.log('sortedKeishas')
 			 let data = this.keishas;
 			 let sortKey = this.sortKey;
 			 let order = this.sortOrders[sortKey] || 1;
@@ -301,7 +307,7 @@
  .grid {
 	 display: grid;
 	 justify-content: center;
-	 grid-template-columns: 100px 150px 25px 50px 20px 50px;
+	 grid-template-columns: 100px 150px 25px 60px 20px 60px;
 	 grid-row-gap: 10px;
  }
 
