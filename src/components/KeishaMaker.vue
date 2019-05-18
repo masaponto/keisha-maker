@@ -8,55 +8,55 @@
 			<a>{{ columns.bucho }}</a>
 			<input type="number" min="0" v-model="bucho_num" placeholder="0" />
 			<a> × </a>
-			<a class="num"> {{select_price.bucho}} </a>
+			<a class="num"> {{selectPrice.bucho}} </a>
 			<a> ＝ </a>
-			<a class="num"> {{pos_price.bucho}} </a>
+			<a class="num"> {{posPrice.bucho}} </a>
 
 			<a>{{ columns.kacho }}</a>
 			<input type="number" min="0" v-model="kacho_num" placeholder="0" />
 			<a> × </a>
-			<a class="num"> {{select_price.kacho}} </a>
+			<a class="num"> {{selectPrice.kacho}} </a>
 			<a> ＝ </a>
-			<a class="num"> {{pos_price.kacho}} </a>
+			<a class="num"> {{posPrice.kacho}} </a>
 
 			<a>{{ columns.shusa }}</a>
 			<input type="number" min="0" v-model="shusa_num" placeholder="0" />
 			<a> × </a>
-			<a class="num"> {{select_price.shusa}} </a>
+			<a class="num"> {{selectPrice.shusa}} </a>
 			<a> ＝ </a>
-			<a class="num"> {{pos_price.shusa}} </a>
+			<a class="num"> {{posPrice.shusa}} </a>
 
 			<a>{{ columns.hira }}</a>
 			<input type="number" min="0" v-model="hira_num" placeholder="0" />
 			<a> × </a>
-			<a class="num">{{ select_price.hira }}</a>
+			<a class="num">{{ selectPrice.hira }}</a>
 			<a> ＝ </a>
-			<a class="num"> {{pos_price.hira}} </a>
+			<a class="num"> {{posPrice.hira}} </a>
 
 			<a>{{ columns.extra }}</a>
 			<input type="number" min="0" v-model="extra_num" placeholder="0" />
 			<a> × </a>
-			<a class="num">{{ select_price.extra }}</a>
+			<a class="num">{{ selectPrice.extra }}</a>
 			<a> ＝ </a>
-			<a class="num"> {{pos_price.extra}} </a>
+			<a class="num"> {{posPrice.extra}} </a>
 
 			<a>{{ columns.total }}</a>
 			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
 			<a></a>
 			<a></a>
 			<a></a>
-			<a class="num">{{select_total}}</a>
+			<a class="num">{{selectTotal}}</a>
 
 			<a>{{ errorText }}</a>
 			<input type="number" min="0" max="5000" v-model="errorVal" pliceholder="0" />
 			<a></a>
 			<a></a>
 			<a></a>
-			<a class="num"> {{select_error}}</a>
+			<a class="num"> {{selectError}}</a>
 
 		</div>
 		<div id="calc-button">
-			<button large class="calc-btn" @click="calc()">計算</button>
+			<button large class="calc-btn" @click="calcKeisha()">計算</button>
 		</div>
 		<div>
 			<table align="center">
@@ -103,7 +103,7 @@
 			 sortOrders[key] = 1
 		 });
 
-		 const select_price = {
+		 const selectPrice = {
 			 bucho: " ",
 			 kacho: " ",
 			 shusa: " ",
@@ -111,7 +111,7 @@
 			 extra: " "
 		 }
 
-		 const pos_price = {
+		 const posPrice = {
 			 bucho: " ",
 			 kacho: " ",
 			 shusa: " ",
@@ -131,16 +131,16 @@
 				  keishas: [],
 				  sortOrders: sortOrders,
 				  sortKey: '',
-				  select_price: select_price,
-				  pos_price: pos_price,
-				  select_total: '',
+				  selectPrice: selectPrice,
+				  posPrice: posPrice,
+				  selectTotal: '',
 				  errorText: '許容誤差',
 				  errorVal: '500',
-				  select_error: '',
+				  selectError: '',
 		 }
 	 },
 	 methods: {
-		 k_combinations: function(set, k) {
+		 kCombinations: function(set, k) {
 			 // https://gist.github.com/axelpale/3118596
 			 var i, j, combs, head, tailcombs;
 
@@ -169,7 +169,7 @@
 				 // head is a list that includes only our current element.
 				 head = set.slice(i, i + 1);
 				 // We take smaller combinations from the subsequent elements
-				 tailcombs = this.k_combinations(set.slice(i + 1), k - 1);
+				 tailcombs = this.kCombinations(set.slice(i + 1), k - 1);
 				 // For each (k-1)-combination we join it with the current
 				 // and store it to the set of k-combinations.
 				 for (j = 0; j < tailcombs.length; j++) {
@@ -178,24 +178,24 @@
 			 }
 			 return combs;
 		 },
-		 calc_total: function(combs, nums, kinds) {
+		 calcTotal: function(combs, nums, kinds) {
 			 let total = 0
 			 for (var i=0; i < kinds; i++) {
 				 total += combs[i] * nums[i].num
 			 }
 			 return total;
 		 },
-		 calc: function(event) {
+		 calcKeisha: function(event) {
 			 console.log('calc')
-			 this.select_price = {}
-			 this.pos_price = {'bucho': ' ',
+			 this.selectPrice = {}
+			 this.posPrice = {'bucho': ' ',
 							   'kacho': ' ',
 							   'shusa': ' ',
 							   'hira': ' ',
 							   'extra': ' '}
 
-			 this.select_error = ' '
-			 this.select_total = ' '
+			 this.selectError = ' '
+			 this.selectTotal = ' '
 
 			 this.keishas = []
 
@@ -206,23 +206,23 @@
 						   {name:'bucho', num: this.bucho_num, rank: 4}]
 
 			 const kinds = nums.filter(num => num.num > 0).length
-			 let combs = this.k_combinations(this.prices, kinds)
+			 let combs = this.kCombinations(this.prices, kinds)
 			 combs = combs.map(c => c.sort())
-			 let prices = combs.map(c => this.calc_total(c.sort((a, b) => a - b), nums, kinds))
+			 let prices = combs.map(c => this.calcTotal(c.sort((a, b) => a - b), nums, kinds))
 
-			 const match_indeces = prices.map(p => (0 <= (p - this.total)) && ((p - this.total) <= this.errorVal))
-			 const match_combs = combs.filter((c, index) => match_indeces[index])
-			 const match_prices = prices.filter((p, index) => match_indeces[index])
+			 const matchIndeces = prices.map(p => (0 <= (p - this.total)) && ((p - this.total) <= this.errorVal))
+			 const matchCombs = combs.filter((c, index) => matchIndeces[index])
+			 const matchPrices = prices.filter((p, index) => matchIndeces[index])
 
 
-			 let select_nums = nums.filter((x) => x.num > 0)
-			 select_nums = select_nums.sort(function(a,b){
+			 let selectNums = nums.filter((x) => x.num > 0)
+			 selectNums = selectNums.sort(function(a,b){
 				 if(a.rank < b.rank) return -1;
 				 if(a.rank > b.rank) return 1;
 				 return 0;
 			 });
 
-			 for (var i = 0; i < match_combs.length; i++) {
+			 for (var i = 0; i < matchCombs.length; i++) {
 				 let keisha = {total: 0,
 							   bucho: 0,
 							   kacho: 0,
@@ -230,14 +230,14 @@
 							   hira: 0,
 							   extra: 0}
 
-				 const c = match_combs[i]
-				 const p = match_prices[i]
+				 const c = matchCombs[i]
+				 const p = matchPrices[i]
 
 
 				 keisha['total'] = p
 
 				 let k = 0
-				 select_nums.forEach(n => {
+				 selectNums.forEach(n => {
 					 keisha[n.name] = c[k]
 					 k++
 				 })
@@ -250,14 +250,14 @@
 			 this.sortOrders[key] = this.sortOrders[key] * -1;
 		 },
 		 showPrice: function(keisha) {
-			 this.select_price = keisha;
-			 this.pos_price = {'bucho': keisha.bucho * this.bucho_num,
+			 this.selectPrice = keisha;
+			 this.posPrice = {'bucho': keisha.bucho * this.bucho_num,
 							   'kacho': keisha.kacho * this.kacho_num,
 							   'shusa': keisha.shusa * this.shusa_num,
 							   'hira': keisha.hira * this.hira_num,
 							   'extra': keisha.extra * this.extra_num}
-			 this.select_total = keisha.total
-			 this.select_error = keisha.total - this.total
+			 this.selectTotal = keisha.total
+			 this.selectError = keisha.total - this.total
 		 }
 	 },
 	 computed: {
