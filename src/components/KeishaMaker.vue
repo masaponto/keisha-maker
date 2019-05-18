@@ -4,14 +4,6 @@
 			<h1>傾斜つけるくん</h1>
 		</div>
 
-		<div class="grid" v-for="(item, index) in items">
-			<a>{{ item.name }}</a>
-			<input type="number" min="0" v-model="item.num" placeholder="0" />
-			<a> × </a>
-			<a class="num"> {{item.selectPrice}} </a>
-			<a> ＝ </a>
-			<a class="num"> {{item.posPrice}} </a>
-		</div>
 
 		<div class="grid">
 			<a>{{ totalText }}</a>
@@ -29,9 +21,22 @@
 			<a class="num"> {{selectError}}</a>
 		</div>
 
+		<div v-for="(item, index) in items" class="grid">
+			<a>{{ item.name }}</a>
+			<input type="number" min="0" v-model="item.num" placeholder="0" />
+			<a> × </a>
+			<a class="num"> {{item.selectPrice}} </a>
+			<a> ＝ </a>
+			<a class="num"> {{item.posPrice}} </a>
+		</div>
 
-		<div id="calc-button">
-			<button large class="calc-btn" @click="calcKeisha()">計算</button>
+		<div id="item-button">
+			<button small class="add-btn" @click="addPos()">追加</button>
+			<button small class="del-btn" @click="delPos()">削除</button>
+		</div>
+
+		<div id="run-button">
+			<button large class="run-btn" @click="runKeisha()">計算</button>
 		</div>
 
 		<div>
@@ -89,12 +94,6 @@
 			 },
 			 {
 				 name: '社員',
-				 num: 0,
-				 selectPrice: '',
-				 posPrice: ''
-			 },
-			 {
-				 name: 'その他',
 				 num: 0,
 				 selectPrice: '',
 				 posPrice: ''
@@ -165,14 +164,21 @@
 			 }
 			 return total;
 		 },
-		 calcKeisha: function(event) {
-			 console.log('calc')
+		 runKeisha: function(event) {
+			 this.calcKeisha()
+		 },
+		 calcKeisha: function() {
+			 const kinds = this.items.length
+
+			 for (var i = 0; i < kinds; i++) {
+				 this.items[i].selectPrice = ' '
+				 this.items[i].posPrice = ' '
+			 }
 
 			 this.selectError = ' '
 			 this.selectTotal = ' '
 			 this.keishas = []
 
-			 const kinds = this.items.length
 
 			 let combs = this.kCombinations(this.prices, kinds)
 			 combs = combs.map(c => c.sort())
@@ -187,21 +193,17 @@
 
 				 const c = matchCombs[i]
 				 const p = matchPrices[i]
-
 				 let k = 0
 
-				 for (var j = 0; j < this.items.length; j++) {
-
+				 for (var j = 0; j < kinds; j++) {
 					 if (this.items[j].num == 0) {
 						 keisha.push(0)
 						 continue
 					 }
-
 					 keisha.push(c[k])
 					 k++
 				 }
 				 keisha.push(p)
-
 				 this.keishas.push(keisha)
 			 }
 		 },
@@ -219,6 +221,24 @@
 
 			 this.selectTotal = keisha[keisha.length -1]
 			 this.selectError = keisha[keisha.length -1] - this.total
+		 },
+		 addPos: function(event) {
+			 if (this.items.length < 10) {
+				 let pos = {
+					 name: '追加-' + (this.items.length - 3),
+					 num: 0,
+					 selectPrice: '',
+					 posPrice: ''
+				 }
+				 this.items.push(pos)
+				 this.calcKeisha()
+			 }
+		 },
+		 delPos: function(event) {
+			 if (this.items.length > 4) {
+				 this.items.pop()
+				 this.calcKeisha()
+			 }
 		 }
 	 },
 	 computed: {
@@ -228,13 +248,11 @@
 			 let sortIndex = this.sortIndex
 			 let order = this.sortOrders[sortIndex] || 1
 
-			 if (sortIndex) {
-				 data = data.slice().sort(function(a, b){
-					 a = a[sortIndex]
-					 b = b[sortIndex]
-					 return (a === b ? 0 : a > b ? 1 : -1) * order
-				 })
-			 }
+			 data = data.slice().sort(function(a, b){
+				 a = a[sortIndex]
+				 b = b[sortIndex]
+				 return (a === b ? 0 : a > b ? 1 : -1) * order
+			 })
 
 			 return data
 		 }
@@ -269,12 +287,12 @@
 	 display: grid;
 	 justify-content: center;
 	 grid-template-columns: 100px 150px 25px 60px 20px 60px;
-	 grid-row-gap: 10px;
+	 margin-bottom: 8px;
  }
 
- .calc-btn {
-	 margin-top: 20px;
-	 margin-bottom: 20px;
+ .run-btn {
+	 margin-top: 10px;
+	 margin-bottom: 25px;
 	 width: 250px;
 	 height: 30px;
      border: none;
@@ -289,11 +307,69 @@
      box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2);
  }
 
- .calc-btn:hover{
+ .run-btn:hover{
 	 background-color: #2d825b;
  }
 
- .calc-btn:active{
+ .run-btn:active{
+	 position: relative;
+	 top: 1px;
+	 left: 1px;
+	 box-shadow: none;
+ }
+
+ .add-btn {
+	 margin-top: 2px;
+	 margin-bottom: 10px;
+	 margin-right: 5px;
+	 width: 60px;
+	 height: 25px;
+     border: none;
+     background: #35495e;
+     color: #fff;
+     font-weight: 500;
+     border-radius: 4px;
+     cursor: pointer;
+     text-align: center;
+     cursor: pointer;
+     font-weight: bold;
+     box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2);
+ }
+
+ .add-btn:hover{
+	 background-color: #35495e;
+ }
+
+ .add-btn:active{
+	 position: relative;
+	 top: 1px;
+	 left: 1px;
+	 box-shadow: none;
+ }
+
+ .del-btn {
+	 margin-top: 2px;
+	 margin-bottom: 10px;
+	 margin-left: 5px;
+	 width: 60px;
+	 height: 25px;
+     border: none;
+     background: #5f6864;
+     color: #fff;
+     font-weight: 500;
+     border-radius: 4px;
+     cursor: pointer;
+     text-align: center;
+     cursor: pointer;
+     font-weight: bold;
+     box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2);
+ }
+
+ .del-btn:hover{
+	 background-color: #3e4442;
+ }
+
+ .del-btn:active{
 	 position: relative;
 	 top: 1px;
 	 left: 1px;
