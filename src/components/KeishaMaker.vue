@@ -5,36 +5,37 @@
 		</div>
 
 		<div class="grid">
+
 			<a>{{ columns.bucho }}</a>
-			<input type="number" min="0" v-model="bucho_num" placeholder="0" />
+			<input type="number" min="0" v-model="buchoNum" placeholder="0" />
 			<a> × </a>
 			<a class="num"> {{selectPrice.bucho}} </a>
 			<a> ＝ </a>
 			<a class="num"> {{posPrice.bucho}} </a>
 
 			<a>{{ columns.kacho }}</a>
-			<input type="number" min="0" v-model="kacho_num" placeholder="0" />
+			<input type="number" min="0" v-model="kachoNum" placeholder="0" />
 			<a> × </a>
 			<a class="num"> {{selectPrice.kacho}} </a>
 			<a> ＝ </a>
 			<a class="num"> {{posPrice.kacho}} </a>
 
 			<a>{{ columns.shusa }}</a>
-			<input type="number" min="0" v-model="shusa_num" placeholder="0" />
+			<input type="number" min="0" v-model="shusaNum" placeholder="0" />
 			<a> × </a>
 			<a class="num"> {{selectPrice.shusa}} </a>
 			<a> ＝ </a>
 			<a class="num"> {{posPrice.shusa}} </a>
 
 			<a>{{ columns.hira }}</a>
-			<input type="number" min="0" v-model="hira_num" placeholder="0" />
+			<input type="number" min="0" v-model="hiraNum" placeholder="0" />
 			<a> × </a>
 			<a class="num">{{ selectPrice.hira }}</a>
 			<a> ＝ </a>
 			<a class="num"> {{posPrice.hira}} </a>
 
 			<a>{{ columns.extra }}</a>
-			<input type="number" min="0" v-model="extra_num" placeholder="0" />
+			<input type="number" min="0" v-model="extraNum" placeholder="0" />
 			<a> × </a>
 			<a class="num">{{ selectPrice.extra }}</a>
 			<a> ＝ </a>
@@ -121,11 +122,11 @@
 
 
 		 return { total: '65000',
-				  bucho_num: '0',
-				  kacho_num: '0',
-				  shusa_num: '0',
-				  hira_num:'0',
-				  extra_num: '0',
+				  buchoNum: '0',
+				  kachoNum: '0',
+				  shusaNum: '0',
+				  hiraNum:'0',
+				  extraNum: '0',
 				  prices: prices,
 				  columns: columns,
 				  keishas: [],
@@ -199,11 +200,11 @@
 
 			 this.keishas = []
 
-			 const nums = [{name:'extra', num: this.extra_num, rank: 0},
-						   {name:'hira', num: this.hira_num, rank: 1},
-						   {name:'shusa', num: this.shusa_num, rank: 2},
-						   {name:'kacho', num: this.kacho_num, rank: 3},
-						   {name:'bucho', num: this.bucho_num, rank: 4}]
+			 const nums = [{name:'extra', num: this.extraNum, rank: 0},
+						   {name:'hira', num: this.hiraNum, rank: 1},
+						   {name:'shusa', num: this.shusaNum, rank: 2},
+						   {name:'kacho', num: this.kachoNum, rank: 3},
+						   {name:'bucho', num: this.buchoNum, rank: 4}]
 
 			 const kinds = nums.filter(num => num.num > 0).length
 			 let combs = this.kCombinations(this.prices, kinds)
@@ -251,11 +252,11 @@
 		 },
 		 showPrice: function(keisha) {
 			 this.selectPrice = keisha;
-			 this.posPrice = {'bucho': keisha.bucho * this.bucho_num,
-							   'kacho': keisha.kacho * this.kacho_num,
-							   'shusa': keisha.shusa * this.shusa_num,
-							   'hira': keisha.hira * this.hira_num,
-							   'extra': keisha.extra * this.extra_num}
+			 this.posPrice = {'bucho': keisha.bucho * this.buchoNum,
+							   'kacho': keisha.kacho * this.kachoNum,
+							   'shusa': keisha.shusa * this.shusaNum,
+							   'hira': keisha.hira * this.hiraNum,
+							   'extra': keisha.extra * this.extraNum}
 			 this.selectTotal = keisha.total
 			 this.selectError = keisha.total - this.total
 		 }
