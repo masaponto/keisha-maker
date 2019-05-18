@@ -4,44 +4,17 @@
 			<h1>傾斜つけるくん</h1>
 		</div>
 
+		<div class="grid" v-for="(item, index) in items">
+			<a>{{ item.name }}</a>
+			<input type="number" min="0" v-model="item.num" placeholder="0" />
+			<a> × </a>
+			<a class="num"> {{item.selectPrice}} </a>
+			<a> ＝ </a>
+			<a class="num"> {{item.posPrice}} </a>
+		</div>
+
 		<div class="grid">
-
-			<a>{{ columns.bucho }}</a>
-			<input type="number" min="0" v-model="buchoNum" placeholder="0" />
-			<a> × </a>
-			<a class="num"> {{selectPrice.bucho}} </a>
-			<a> ＝ </a>
-			<a class="num"> {{posPrice.bucho}} </a>
-
-			<a>{{ columns.kacho }}</a>
-			<input type="number" min="0" v-model="kachoNum" placeholder="0" />
-			<a> × </a>
-			<a class="num"> {{selectPrice.kacho}} </a>
-			<a> ＝ </a>
-			<a class="num"> {{posPrice.kacho}} </a>
-
-			<a>{{ columns.shusa }}</a>
-			<input type="number" min="0" v-model="shusaNum" placeholder="0" />
-			<a> × </a>
-			<a class="num"> {{selectPrice.shusa}} </a>
-			<a> ＝ </a>
-			<a class="num"> {{posPrice.shusa}} </a>
-
-			<a>{{ columns.hira }}</a>
-			<input type="number" min="0" v-model="hiraNum" placeholder="0" />
-			<a> × </a>
-			<a class="num">{{ selectPrice.hira }}</a>
-			<a> ＝ </a>
-			<a class="num"> {{posPrice.hira}} </a>
-
-			<a>{{ columns.extra }}</a>
-			<input type="number" min="0" v-model="extraNum" placeholder="0" />
-			<a> × </a>
-			<a class="num">{{ selectPrice.extra }}</a>
-			<a> ＝ </a>
-			<a class="num"> {{posPrice.extra}} </a>
-
-			<a>{{ columns.total }}</a>
+			<a>{{ totalText }}</a>
 			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
 			<a></a>
 			<a></a>
@@ -54,30 +27,35 @@
 			<a></a>
 			<a></a>
 			<a class="num"> {{selectError}}</a>
-
 		</div>
+
+
 		<div id="calc-button">
 			<button large class="calc-btn" @click="calcKeisha()">計算</button>
 		</div>
+
 		<div>
 			<table align="center">
 				<thead>
 					<tr>
-						<th v-for="(value, key) in columns" @click="sortBy(key)">
-							{{ value }}
-							<span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'"></span>
+						<th v-for="(item, index) in items" @click="sortBy(index)">
+							{{ item.name }}
+							<span class="arrow" :class="sortOrders[index] > 0 ? 'asc' : 'dsc'"></span>
+						</th>
+						<th>
+							{{totalText}}
 						</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr v-for="keisha in sortedKeishas" @click="showPrice(keisha)">
-						<td v-for="(value, key) in columns" align="right">
-							{{ keisha[key] }}
+						<td v-for="k in keisha" align="right">
+							{{ k }}
 						</td>
 					</tr>
-				</tbody>
 			</table>
 		</div>
+
 	</div>
 </template>
 
@@ -90,54 +68,55 @@
 			 prices[i] = i * 500 + 1000;
 		 }
 
-		 const columns = {
-			 bucho: '部長',
-			 kacho: '課長',
-			 shusa:'主査',
-			 hira: '社員',
-			 extra: 'その他',
-			 total: '合計金額'
-		 };
+		 let items = [
+			 {
+				 name: '部長',
+				 num: 0,
+				 selectPrice: '',
+				 posPrice: ''
+			 },
+			 {
+				 name: '課長',
+				 num: 0,
+				 selectPrice: '',
+				 posPrice: ''
+			 },
+			 {
+				 name: '主査',
+				 num: 0,
+				 selectPrice: '',
+				 posPrice: ''
+			 },
+			 {
+				 name: '社員',
+				 num: 0,
+				 selectPrice: '',
+				 posPrice: ''
+			 },
+			 {
+				 name: 'その他',
+				 num: 0,
+				 selectPrice: '',
+				 posPrice: ''
+			 }
+		 ]
 
-		 var sortOrders = {}
-		 Object.keys(columns).forEach(function (key) {
-			 sortOrders[key] = 1
-		 });
-
-		 const selectPrice = {
-			 bucho: " ",
-			 kacho: " ",
-			 shusa: " ",
-			 hira: " ",
-			 extra: " "
-		 }
-
-		 const posPrice = {
-			 bucho: " ",
-			 kacho: " ",
-			 shusa: " ",
-			 hira: " ",
-			 extra: " "
-		 }
-
+		 let sortOrders = []
+		 items.forEach( x =>
+			 sortOrders.push(1)
+		 )
 
 		 return { total: '65000',
-				  buchoNum: '0',
-				  kachoNum: '0',
-				  shusaNum: '0',
-				  hiraNum:'0',
-				  extraNum: '0',
 				  prices: prices,
-				  columns: columns,
 				  keishas: [],
 				  sortOrders: sortOrders,
-				  sortKey: '',
-				  selectPrice: selectPrice,
-				  posPrice: posPrice,
+				  sortIndex: '',
+				  totalText: '合計',
 				  selectTotal: '',
 				  errorText: '許容誤差',
-				  errorVal: '500',
-				  selectError: '',
+				  errorVal: '0',
+	              selectError: '',
+	              items: items
 		 }
 	 },
 	 methods: {
@@ -179,101 +158,86 @@
 			 }
 			 return combs;
 		 },
-		 calcTotal: function(combs, nums, kinds) {
+		 calcTotal: function(combs, kinds) {
 			 let total = 0
 			 for (var i=0; i < kinds; i++) {
-				 total += combs[i] * nums[i].num
+				 total += combs[i] * this.items[i].num
 			 }
 			 return total;
 		 },
 		 calcKeisha: function(event) {
 			 console.log('calc')
-			 this.selectPrice = {}
-			 this.posPrice = {'bucho': ' ',
-							   'kacho': ' ',
-							   'shusa': ' ',
-							   'hira': ' ',
-							   'extra': ' '}
 
 			 this.selectError = ' '
 			 this.selectTotal = ' '
-
 			 this.keishas = []
 
-			 const nums = [{name:'extra', num: this.extraNum, rank: 0},
-						   {name:'hira', num: this.hiraNum, rank: 1},
-						   {name:'shusa', num: this.shusaNum, rank: 2},
-						   {name:'kacho', num: this.kachoNum, rank: 3},
-						   {name:'bucho', num: this.buchoNum, rank: 4}]
+			 const kinds = this.items.length
 
-			 const kinds = nums.filter(num => num.num > 0).length
 			 let combs = this.kCombinations(this.prices, kinds)
 			 combs = combs.map(c => c.sort())
-			 let prices = combs.map(c => this.calcTotal(c.sort((a, b) => a - b), nums, kinds))
+			 let prices = combs.map(c => this.calcTotal(c.sort((a, b) => b - a), kinds))
 
 			 const matchIndeces = prices.map(p => (0 <= (p - this.total)) && ((p - this.total) <= this.errorVal))
 			 const matchCombs = combs.filter((c, index) => matchIndeces[index])
 			 const matchPrices = prices.filter((p, index) => matchIndeces[index])
 
-
-			 let selectNums = nums.filter((x) => x.num > 0)
-			 selectNums = selectNums.sort(function(a,b){
-				 if(a.rank < b.rank) return -1;
-				 if(a.rank > b.rank) return 1;
-				 return 0;
-			 });
-
 			 for (var i = 0; i < matchCombs.length; i++) {
-				 let keisha = {total: 0,
-							   bucho: 0,
-							   kacho: 0,
-							   shusa: 0,
-							   hira: 0,
-							   extra: 0}
+				 let keisha = []
 
 				 const c = matchCombs[i]
 				 const p = matchPrices[i]
 
-
-				 keisha['total'] = p
-
 				 let k = 0
-				 selectNums.forEach(n => {
-					 keisha[n.name] = c[k]
+
+				 for (var j = 0; j < this.items.length; j++) {
+
+					 if (this.items[j].num == 0) {
+						 keisha.push(0)
+						 continue
+					 }
+
+					 keisha.push(c[k])
 					 k++
-				 })
+				 }
+				 keisha.push(p)
 
 				 this.keishas.push(keisha)
 			 }
 		 },
-		 sortBy: function(key) {
-			 this.sortKey = key;
-			 this.sortOrders[key] = this.sortOrders[key] * -1;
+		 sortBy: function(index) {
+			 this.sortIndex = index;
+			 this.sortOrders[index] = this.sortOrders[index] * -1
+			 console.log(this.sortIndex)
+			 console.log(this.sortOrders)
 		 },
 		 showPrice: function(keisha) {
-			 this.selectPrice = keisha;
-			 this.posPrice = {'bucho': keisha.bucho * this.buchoNum,
-							   'kacho': keisha.kacho * this.kachoNum,
-							   'shusa': keisha.shusa * this.shusaNum,
-							   'hira': keisha.hira * this.hiraNum,
-							   'extra': keisha.extra * this.extraNum}
-			 this.selectTotal = keisha.total
-			 this.selectError = keisha.total - this.total
+
+			 for (var i = 0; i < this.items.length; i++) {
+				 this.items[i].selectPrice = keisha[i]
+				 this.items[i].posPrice = keisha[i] * this.items[i].num
+			 }
+
+			 this.selectTotal = keisha[keisha.length -1]
+			 this.selectError = keisha[keisha.length -1] - this.total
 		 }
 	 },
 	 computed: {
 		 //https://www.webopixel.net/javascript/1193.html
 		 sortedKeishas: function () {
-			 let data = this.keishas;
-			 let sortKey = this.sortKey;
-			 let order = this.sortOrders[sortKey] || 1;
+			 let data = this.keishas
+			 let sortIndex = this.sortIndex
+			 let order = this.sortOrders[sortIndex] || 1
 
-			 if (sortKey) {
+			 console.log('sort')
+			 console.log(order)
+
+			 if (sortIndex) {
 				 data = data.slice().sort(function(a, b){
-					 a = a[sortKey];
-					 b = b[sortKey];
-					 return (a === b ? 0 : a > b ? 1 : -1) * order;
-				 });
+					 a = a[sortIndex]
+					 b = b[sortIndex]
+					 return (a === b ? 0 : a > b ? 1 : -1) * order
+				 })
 			 }
 
 			 return data
