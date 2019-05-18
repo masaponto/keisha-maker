@@ -208,8 +208,7 @@
 		 sortBy: function(index) {
 			 this.sortIndex = index;
 			 this.sortOrders[index] = this.sortOrders[index] * -1
-			 console.log(this.sortIndex)
-			 console.log(this.sortOrders)
+			 this.sortOrders = this.sortOrders.concat()
 		 },
 		 showPrice: function(keisha) {
 
@@ -228,9 +227,6 @@
 			 let data = this.keishas
 			 let sortIndex = this.sortIndex
 			 let order = this.sortOrders[sortIndex] || 1
-
-			 console.log('sort')
-			 console.log(order)
 
 			 if (sortIndex) {
 				 data = data.slice().sort(function(a, b){
