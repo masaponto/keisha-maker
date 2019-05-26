@@ -7,14 +7,14 @@
 
 		<div class="grid">
 			<a>{{ totalText }}</a>
-			<input type="number" min="0" max="1000000" v-model="total" pliceholder="0" />
+			<input type="number" min="0" max="1000000" v-model.number="total" pliceholder="0"/>
 			<a></a>
 			<a></a>
 			<a></a>
 			<a class="num">{{selectTotal}}</a>
 
 			<a>{{ errorText }}</a>
-			<input type="number" min="0" max="5000" v-model="errorVal" pliceholder="0" />
+			<input type="number" min="0" max="5000" v-model.number="errorVal" pliceholder="0" />
 			<a></a>
 			<a></a>
 			<a></a>
@@ -23,7 +23,7 @@
 
 		<div v-for="(item, index) in items" class="grid">
 			<a>{{ item.name }}</a>
-			<input type="number" min="0" v-model="item.num" placeholder="0" />
+			<input type="number" min="0" v-model.number="item.num" placeholder="0" />
 			<a> × </a>
 			<a class="num"> {{item.selectPrice}} </a>
 			<a> ＝ </a>
